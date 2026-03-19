@@ -1,67 +1,77 @@
 const Usuario = require('../models/Usuario');
-const bcrypt = require('bcrypt');
 
 class UsuarioService {
-
-  // REGISTRO
-  async register(data) {
-    const { nombre, email, password } = data;
-
-    const existingUser = await Usuario.findOne({ email });
-    if (existingUser) {
-      throw new Error('El correo ya está registrado');
+  async obtenerPerfil(userId) {
+    try {
+      const usuario = await Usuario.findById(userId).select('-password_hash');
+      if (!usuario) {
+        throw new Error('Usuario no encontrado');
+      }
+      return usuario;
+    } catch (error) {
+      throw error;
     }
-
-    const password_hash = await bcrypt.hash(password, 10);
-
-    const usuario = await Usuario.create({
-      nombre,
-      email,
-      password_hash
-    });
-
-    return usuario;
   }
 
-  // LOGIN
-  async login(email, password) {
-    const usuario = await Usuario.findOne({ email });
+  async actualizarPerfil(userId, datosActualizar) {
+    try {
+      // Prevenir actualización de campos sensibles
+      const camposPermitidos = ['nombre'];
+      const datos = {};
+      
+      camposPermitidos.forEach(campo => {
+        if (datosActualizar[campo]) {
+          datos[campo] = datosActualizar[campo];
+        }
+      });
 
-    if (!usuario) {
-      throw new Error('Usuario no encontrado');
+      const usuario = await Usuario.findByIdAndUpdate(
+        userId,
+        { $set: datos },
+        { new: true, runValidators: true }
+      ).select('-password_hash');
+
+      return usuario;
+    } catch (error) {
+      throw error;
     }
-
-    const validPassword = await bcrypt.compare(password, usuario.password_hash);
-
-    if (!validPassword) {
-      throw new Error('Contraseña incorrecta');
-    }
-
-    return usuario;
   }
 
-  // AGREGAR DIRECCIÓN
   async agregarDireccion(userId, direccion) {
-    const usuario = await Usuario.findById(userId);
+    try {
+      // Si es principal, quitar principal de otras direcciones
+      if (direccion.es_principal) {
+        await Usuario.updateOne(
+          { _id: userId, 'perfil.direcciones.es_principal': true },
+          { $set: { 'perfil.direcciones.$.es_principal': false } }
+        );
+      }
 
-    if (!usuario) {
-      throw new Error('Usuario no encontrado');
+      const usuario = await Usuario.findByIdAndUpdate(
+        userId,
+        { $push: { 'perfil.direcciones': direccion } },
+        { new: true }
+      ).select('-password_hash');
+
+      return usuario;
+    } catch (error) {
+      throw error;
     }
-
-    usuario.perfil.direcciones.push(direccion);
-    await usuario.save();
-
-    return usuario;
   }
 
-  // OBTENER PERFIL
-  async getPerfil(userId) {
-    const usuario = await Usuario.findById(userId);
-    if (!usuario) throw new Error('Usuario no encontrado');
+  async eliminarDireccion(userId, direccionId) {
+    try {
+      const usuario = await Usuario.findByIdAndUpdate(
+        userId,
+        { $pull: { 'perfil.direcciones': { _id: direccionId } } },
+        { new: true }
+      ).select('-password_hash');
 
-    return usuario;
+      return usuario;
+    } catch (error) {
+      throw error;
+    }
   }
-
 }
 
 module.exports = new UsuarioService();
