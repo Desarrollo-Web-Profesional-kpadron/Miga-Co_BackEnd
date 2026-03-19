@@ -1,9 +1,13 @@
 const router = require('express').Router();
 const usuarioController = require('../controllers/usuarios.controller');
+const { verificarToken } = require('../middlewares/auth.middleware');
 
-router.post('/register', usuarioController.register);
-router.post('/login', usuarioController.login);
-router.post('/:userId/direccion', usuarioController.agregarDireccion);
-router.get('/:userId/perfil', usuarioController.getPerfil);
+// Todas las rutas requieren autenticación
+router.use(verificarToken);
+
+router.get('/perfil', usuarioController.obtenerPerfil);
+router.put('/perfil', usuarioController.actualizarPerfil);
+router.post('/direcciones', usuarioController.agregarDireccion);
+router.delete('/direcciones/:direccionId', usuarioController.eliminarDireccion);
 
 module.exports = router;

@@ -1,48 +1,59 @@
 const usuarioService = require('../services/usuario.service');
 
 class UsuarioController {
-
-  async register(req, res) {
+  async obtenerPerfil(req, res) {
     try {
-      const usuario = await usuarioService.register(req.body);
-      res.status(201).json(usuario);
+      const usuario = await usuarioService.obtenerPerfil(req.usuario.id);
+      res.json(usuario);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res.status(404).json({ error: error.message });
     }
   }
 
-  async login(req, res) {
+  async actualizarPerfil(req, res) {
     try {
-      const { email, password } = req.body;
-      const usuario = await usuarioService.login(email, password);
-      res.json(usuario);
+      const usuario = await usuarioService.actualizarPerfil(
+        req.usuario.id, 
+        req.body
+      );
+      res.json({
+        message: 'Perfil actualizado exitosamente',
+        usuario
+      });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res.status(400).json({ error: error.message });
     }
   }
 
   async agregarDireccion(req, res) {
     try {
-      const { userId } = req.params;
-      const direccion = req.body;
-
-      const usuario = await usuarioService.agregarDireccion(userId, direccion);
-      res.json(usuario);
+      const usuario = await usuarioService.agregarDireccion(
+        req.usuario.id,
+        req.body
+      );
+      res.json({
+        message: 'Dirección agregada exitosamente',
+        usuario
+      });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res.status(400).json({ error: error.message });
     }
   }
 
-  async getPerfil(req, res) {
+  async eliminarDireccion(req, res) {
     try {
-      const { userId } = req.params;
-      const usuario = await usuarioService.getPerfil(userId);
-      res.json(usuario);
+      const usuario = await usuarioService.eliminarDireccion(
+        req.usuario.id,
+        req.params.direccionId
+      );
+      res.json({
+        message: 'Dirección eliminada exitosamente',
+        usuario
+      });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res.status(400).json({ error: error.message });
     }
   }
-
 }
 
 module.exports = new UsuarioController();

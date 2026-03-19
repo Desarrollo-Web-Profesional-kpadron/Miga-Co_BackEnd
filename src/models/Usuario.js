@@ -1,4 +1,6 @@
+// models/Usuario.js
 const { Schema, model } = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const UsuarioSchema = new Schema({
   nombre: { type: String, required: true },
@@ -14,7 +16,7 @@ const UsuarioSchema = new Schema({
   perfil: {
     direcciones: [
       {
-        etiqueta: { type: String, default: 'Hogar' }, // Ej: "Oficina", "Casa"
+        etiqueta: { type: String, default: 'Hogar' },
         calle: String,
         ciudad: String,
         codigo_postal: String,
@@ -22,13 +24,12 @@ const UsuarioSchema = new Schema({
         es_principal: { type: Boolean, default: false }
       }
     ],
-    // Almacenamos info del método de pago (no datos sensibles como el CVV)
     metodos_pago: [
       {
         tipo: { type: String, enum: ['tarjeta', 'paypal'], default: 'tarjeta' },
-        last4: String,        // Últimos 4 dígitos para que el usuario la reconozca
-        brand: String,        // Visa, Mastercard, etc.
-        token_pasarela: String // ID del cliente en Stripe/PayPal (Crucial para seguridad)
+        last4: String,
+        brand: String,
+        token_pasarela: String
       }
     ]
   },
@@ -38,5 +39,10 @@ const UsuarioSchema = new Schema({
     default: Date.now
   }
 });
+
+// Método para comparar contraseñas
+UsuarioSchema.methods.compararPassword = async function(password) {
+  return await bcrypt.compare(password, this.password_hash);
+};
 
 module.exports = model('Usuario', UsuarioSchema);
