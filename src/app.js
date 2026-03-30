@@ -23,12 +23,14 @@ connectDB()
     authRoutes = require("./routes/auth.routes");
     usuarioRoutes = require("./routes/usuarios.routes");
     productosRoutes = require("./routes/productos.routes");
+    pedidoRoutes = require('./routes/pedidos.routes');
     personalizacionesRoutes = require("./routes/personalizaciones.routes");
 
     // Configurar rutas
     app.use("/api/auth", authRoutes);
     app.use("/api/usuarios", usuarioRoutes);
     app.use("/api/productos", productosRoutes);
+    app.use('/api/pedidos', pedidoRoutes);
     app.use("/api/personalizaciones", personalizacionesRoutes);
 
     console.log("✅ Rutas configuradas después de la conexión a DB");
