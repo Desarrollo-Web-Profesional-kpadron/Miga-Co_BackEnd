@@ -4,7 +4,11 @@ class ResenaController {
 
   async crearResena(req, res) {
     try {
-      const resena = await resenaService.crearResena(req.body);
+      const data = { ...req.body };
+      if (req.file) {
+        data.foto_url = `http://localhost:3000/uploads/${req.file.filename}`;
+      }
+      const resena = await resenaService.crearResena(data);
       res.status(201).json(resena);
     } catch (error) {
       res.status(400).json({ message: error.message });

@@ -10,7 +10,7 @@ const app = express();
 // Middlewares que NO dependen de la DB
 app.use(cors());
 app.use(express.json());
-app.use(express.static("uploads"));
+app.use("/uploads", express.static("uploads"));
 app.use(express.urlencoded({ extended: true }));
 
 // Variable para almacenar las rutas después de la conexión
