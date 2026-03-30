@@ -12,7 +12,11 @@ const UsuarioSchema = new Schema({
     trim: true 
   },
   password_hash: { type: String, required: true },
-  
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
+  },
   perfil: {
     direcciones: [
       {

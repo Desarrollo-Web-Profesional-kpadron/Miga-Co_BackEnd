@@ -27,13 +27,31 @@ class UsuarioController {
 
   async agregarDireccion(req, res) {
     try {
-      const usuario = await usuarioService.agregarDireccion(
+      const { usuario, direccion } = await usuarioService.agregarDireccion(
         req.usuario.id,
         req.body
       );
       res.json({
         message: 'Dirección agregada exitosamente',
-        usuario
+        usuario,
+        direccion
+      });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+  async actualizarDireccion(req, res) {
+    try {
+      const { usuario, direccion } = await usuarioService.actualizarDireccion(
+        req.usuario.id,
+        req.params.direccionId,
+        req.body
+      );
+      res.json({
+        message: 'Dirección actualizada exitosamente',
+        usuario,
+        direccion
       });
     } catch (error) {
       res.status(400).json({ error: error.message });
