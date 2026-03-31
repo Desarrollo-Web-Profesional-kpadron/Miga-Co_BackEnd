@@ -10,11 +10,11 @@ const app = express();
 // Middlewares que NO dependen de la DB
 app.use(cors());
 app.use(express.json());
-app.use(express.static("uploads"));
+app.use("/uploads", express.static("uploads"));
 app.use(express.urlencoded({ extended: true }));
 
 // Variable para almacenar las rutas después de la conexión
-let authRoutes, usuarioRoutes, productosRoutes, personalizacionesRoutes;
+let authRoutes, usuarioRoutes, productosRoutes, resenasRoutes, personalizacionesRoutes;
 
 // Conectar a DB y luego configurar rutas
 connectDB()
@@ -24,6 +24,7 @@ connectDB()
     usuarioRoutes = require("./routes/usuarios.routes");
     productosRoutes = require("./routes/productos.routes");
     pedidoRoutes = require('./routes/pedidos.routes');
+    resenasRoutes = require('./routes/resena.routes');
     personalizacionesRoutes = require("./routes/personalizaciones.routes");
 
     // Configurar rutas
@@ -31,6 +32,7 @@ connectDB()
     app.use("/api/usuarios", usuarioRoutes);
     app.use("/api/productos", productosRoutes);
     app.use('/api/pedidos', pedidoRoutes);
+    app.use('/api/resenas', resenasRoutes);
     app.use("/api/personalizaciones", personalizacionesRoutes);
 
     console.log("✅ Rutas configuradas después de la conexión a DB");
