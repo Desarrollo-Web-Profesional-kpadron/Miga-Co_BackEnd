@@ -8,6 +8,7 @@ router.use(verificarToken);
 router.get('/perfil', usuarioController.obtenerPerfil);
 router.put('/perfil', usuarioController.actualizarPerfil);
 router.post('/direcciones', usuarioController.agregarDireccion);
+router.put('/direcciones/:direccionId', usuarioController.actualizarDireccion); 
 router.delete('/direcciones/:direccionId', usuarioController.eliminarDireccion);
 
 module.exports = router;

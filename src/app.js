@@ -17,24 +17,30 @@ app.use(express.urlencoded({ extended: true }));
 let authRoutes, usuarioRoutes, productosRoutes, resenasRoutes, personalizacionesRoutes;
 
 // Conectar a DB y luego configurar rutas
-connectDB().then(() => {
-  authRoutes = require('./routes/auth.routes');
-  usuarioRoutes = require('./routes/usuarios.routes');
-  productosRoutes = require('./routes/productos.routes');
-  resenasRoutes = require('./routes/resena.routes');
-  personalizacionesRoutes = require('./routes/personalizaciones.routes');
+connectDB()
+  .then(() => {
+    // Importar rutas SOLO después de conectar
+    authRoutes = require("./routes/auth.routes");
+    usuarioRoutes = require("./routes/usuarios.routes");
+    productosRoutes = require("./routes/productos.routes");
+    pedidoRoutes = require('./routes/pedidos.routes');
+    resenasRoutes = require('./routes/resena.routes');
+    personalizacionesRoutes = require("./routes/personalizaciones.routes");
 
-  app.use('/api/auth', authRoutes);
-  app.use("/api/usuarios", usuarioRoutes);
-  app.use("/api/productos", productosRoutes);
-  app.use('/api/resenas', resenasRoutes);
-  app.use("/api/personalizaciones", personalizacionesRoutes);
+    // Configurar rutas
+    app.use("/api/auth", authRoutes);
+    app.use("/api/usuarios", usuarioRoutes);
+    app.use("/api/productos", productosRoutes);
+    app.use('/api/pedidos', pedidoRoutes);
+    app.use('/api/resenas', resenasRoutes);
+    app.use("/api/personalizaciones", personalizacionesRoutes);
 
-  console.log('✅ Rutas configuradas después de la conexión a DB');
-}).catch(err => {
-  console.error('❌ Error conectando a DB:', err);
-  process.exit(1);
-});
+    console.log("✅ Rutas configuradas después de la conexión a DB");
+  })
+  .catch((err) => {
+    console.error("❌ Error conectando a DB:", err);
+    process.exit(1);
+  });
 
 // Middleware de manejo de errores
 app.use((err, req, res, next) => {
