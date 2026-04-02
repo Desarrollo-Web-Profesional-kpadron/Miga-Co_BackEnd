@@ -14,7 +14,9 @@ app.use("/uploads", express.static("uploads"));
 app.use(express.urlencoded({ extended: true }));
 
 // Variable para almacenar las rutas después de la conexión
-let authRoutes, usuarioRoutes, productosRoutes, resenasRoutes, personalizacionesRoutes;
+
+let authRoutes, usuarioRoutes, productosRoutes, resenasRoutes, personalizacionesRoutes,carritoRoutes;
+
 
 // Conectar a DB y luego configurar rutas
 connectDB()
@@ -26,6 +28,7 @@ connectDB()
     pedidoRoutes = require('./routes/pedidos.routes');
     resenasRoutes = require('./routes/resena.routes');
     personalizacionesRoutes = require("./routes/personalizaciones.routes");
+    carritoRoutes = require("./routes/carrito.routes");
 
     // Configurar rutas
     app.use("/api/auth", authRoutes);
@@ -34,6 +37,7 @@ connectDB()
     app.use('/api/pedidos', pedidoRoutes);
     app.use('/api/resenas', resenasRoutes);
     app.use("/api/personalizaciones", personalizacionesRoutes);
+    app.use("/api/carrito", carritoRoutes);
 
     console.log("✅ Rutas configuradas después de la conexión a DB");
   })
