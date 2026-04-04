@@ -27,7 +27,9 @@ const PedidoSchema = new Schema({
     metodo_envio: String,
     direccion_entrega: {
       calle: String,
-      coords: [Number]
+      ciudad: String,
+      codigo_postal: String,
+      referencias:String
     },
     estado: String
   },
