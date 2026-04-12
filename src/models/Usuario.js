@@ -37,7 +37,17 @@ const UsuarioSchema = new Schema({
       }
     ]
   },
-  
+  dos_factor: {
+    activo:        { type: Boolean, default: true },
+    codigo_temp:   { type: String,  default: null },   
+    codigo_expira: { type: Date,    default: null }    
+  },
+ 
+  recuperacion: {
+    codigo:      { type: String, default: null },   
+    expira:      { type: Date,   default: null },   
+    reset_token: { type: String, default: null }    
+  },
   fecha_registro: {
     type: Date,
     default: Date.now
